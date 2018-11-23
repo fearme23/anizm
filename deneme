@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Nov 13 04:11:34 2018
+
+@author: fatih
+"""
+import time
+import webbrowser
+from bs4 import BeautifulSoup as bs
+from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
+
+options = Options()
+options.add_argument('--headless')
+driver_path = r"C:\Users\Xcution\Downloads\Compressed\geckodriver"
+browser = webdriver.Firefox(driver_path,options=options)
+
+
+
+url = "http://www.anizm.tv/"
+browser.get(url)
+time.sleep(2)
+html = browser.page_source
+browser.quit()
+soup = bs(html,"lxml")
+
+kaynak = soup.find("div", attrs ={"class":"row no-gutter"}).find_all("div", attrs={"class":"col-md-3 col-xs-6 mb-10 son-eklenenler-icerik"})
+
+no = 1
+urllist=[]
+
+for i in kaynak:
+    anime_adi = i.find("a").find("div",attrs = {"class":"anime-caption"}).get_text(" ",strip=False)
+    link = i.find("a").get("href")
+    anime_bolum =i.find("a").find("div",attrs = {"class":"bolum"}).span.text
+    original = "www.anizm.tv/"+str(link)
+    urllist.append(original)
+    print(str(no)+"-)",anime_adi,anime_bolum,original,sep="\n")
+    print("-"*60)
+    no +=1
+    
+a = input("Kaçıncı Sıra: ")
+
+webbrowser.open(urllist[int(a)-1],new=0,autoraise=True)
+        
+        
+    
+
+    
